@@ -51,6 +51,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
   List<List<String>> board =
       List.generate(9, (_) => List.generate(9, (_) => ""));
   String currentPlayer = 'X';
+  int activeGrid = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -65,15 +66,26 @@ class _TicTacToePageState extends State<TicTacToePage> {
             Text('Current Player: $currentPlayer'),
             const SizedBox(height: 20),
             SizedBox(
-              height: 400,
-              child: GridView.builder(
-                itemCount: 9,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                ),
-                itemBuilder: (context, index) {
-                  return buildGrid(index);
-                },
+              height: 375,
+              width: 375,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 3.0)),
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 9,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      itemBuilder: (context, index) {
+                        return Container(child: buildGrid(index));
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 20),
@@ -88,27 +100,60 @@ class _TicTacToePageState extends State<TicTacToePage> {
   }
 
   Widget buildGrid(int gridIndex) {
-    return GridView.builder(
-      itemCount: 9,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 1.0,
-        mainAxisSpacing: 1.0,
+    // for Outer Grid
+    bool isActiveGrid = activeGrid == gridIndex;
+    Color borderColor = isActiveGrid ? Colors.blue : Colors.grey;
+    double width = 0.00004;
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+              color: borderColor, width: (isActiveGrid) ? 2.0 : 0.000004),
+          right: BorderSide(
+              color: borderColor,
+              width: (gridIndex % 3 == 0 || gridIndex % 3 == 1 || isActiveGrid)
+                  ? 2.0
+                  : 0.000004),
+          bottom: BorderSide(
+              color: borderColor,
+              width: (gridIndex < 6 || isActiveGrid) ? 2.0 : 0.000004),
+          top: BorderSide(
+              color: borderColor, width: (isActiveGrid) ? 2.0 : 0.000004),
+        ),
       ),
-      itemBuilder: (context, index) {
-        return buildGridCell(gridIndex, index);
-      },
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 9,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 1.0,
+          mainAxisSpacing: 1.0,
+        ),
+        itemBuilder: (context, index) {
+          return buildGridCell(gridIndex, index);
+        },
+      ),
     );
   }
 
   Widget buildGridCell(int gridIndex, int cellIndex) {
+    // for Inner Grid
+
     return GestureDetector(
       onTap: () {
         tapAction(gridIndex, cellIndex);
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(),
+          border: Border(
+            right: BorderSide(
+                color: Colors.black,
+                width: (cellIndex % 3 == 0 || cellIndex % 3 == 1)
+                    ? 2.0
+                    : 0.000004),
+            bottom: BorderSide(
+                color: Colors.black, width: (cellIndex < 6) ? 2.0 : 0.000004),
+          ),
         ),
         child: Center(
           child: Text(
@@ -121,13 +166,17 @@ class _TicTacToePageState extends State<TicTacToePage> {
   }
 
   void tapAction(int gridIndex, int cellIndex) {
-    if (board[gridIndex][cellIndex] == "") {
-      setState(() {
-        board[gridIndex][cellIndex] = currentPlayer;
-        _checkForWinner(gridIndex, cellIndex);
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-      });
-      // Add your game logic here, check for a win, update the turn, etc.
+    if (activeGrid == -1 || activeGrid == gridIndex) {
+      if (board[gridIndex][cellIndex] == "") {
+        setState(() {
+          board[gridIndex][cellIndex] = currentPlayer;
+          if (_checkForWinner(gridIndex)) {
+            print("Player $currentPlayer wins in grid $gridIndex");
+          }
+          currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+          activeGrid = cellIndex;
+        });
+      }
     }
   }
 
@@ -135,12 +184,37 @@ class _TicTacToePageState extends State<TicTacToePage> {
     setState(() {
       board = List.generate(9, (_) => List.generate(9, (_) => ""));
       currentPlayer = 'X';
+      activeGrid = -1;
     });
   }
 
-  void _checkForWinner(row, col) {
-    // Implement the logic to check for a winner in the smaller grid
-    // and update the overall game state accordingly.
-    // You may need to check for a winner in the larger grid as well.
+  bool _checkForWinner(int gridIndex) {
+    // Check for a winner in the smaller grid
+    for (int i = 0; i < 3; i++) {
+      // Check rows
+      if (board[gridIndex][i * 3] == board[gridIndex][i * 3 + 1] &&
+          board[gridIndex][i * 3] == board[gridIndex][i * 3 + 2] &&
+          board[gridIndex][i * 3] != "") {
+        return true;
+      }
+      // Check columns
+      if (board[gridIndex][i] == board[gridIndex][i + 3] &&
+          board[gridIndex][i] == board[gridIndex][i + 6] &&
+          board[gridIndex][i] != "") {
+        return true;
+      }
+    }
+    // Check diagonals
+    if (board[gridIndex][0] == board[gridIndex][4] &&
+        board[gridIndex][0] == board[gridIndex][8] &&
+        board[gridIndex][0] != "") {
+      return true;
+    }
+    if (board[gridIndex][2] == board[gridIndex][4] &&
+        board[gridIndex][2] == board[gridIndex][6] &&
+        board[gridIndex][2] != "") {
+      return true;
+    }
+    return false;
   }
 }
