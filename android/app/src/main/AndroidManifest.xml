@@ -1,4 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="1"
+    android:versionName="1.1">
     <application
         android:label="SuperXO"
         android:name="${applicationName}"
@@ -19,6 +21,8 @@
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
+                android:versionCode="1"
+                android:versionName="1.0"
               />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
