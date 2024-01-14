@@ -50,6 +50,7 @@ class TicTacToePage extends StatefulWidget {
 class _TicTacToePageState extends State<TicTacToePage> {
   List<List<String>> board =
       List.generate(9, (_) => List.generate(9, (_) => ""));
+  List<String> winners = List.generate(9, (_) => "");
   String currentPlayer = 'X';
   int activeGrid = -1;
 
@@ -101,9 +102,8 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
   Widget buildGrid(int gridIndex) {
     // for Outer Grid
-    bool isActiveGrid = activeGrid == gridIndex;
+    bool isActiveGrid = (activeGrid == gridIndex);
     Color borderColor = isActiveGrid ? Colors.blue : Colors.grey;
-    double width = 0.00004;
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -126,11 +126,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
         itemCount: 9,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          crossAxisSpacing: 1.0,
-          mainAxisSpacing: 1.0,
         ),
         itemBuilder: (context, index) {
-          return buildGridCell(gridIndex, index);
+          return Container(child: buildGridCell(gridIndex, index));
         },
       ),
     );
@@ -158,7 +156,11 @@ class _TicTacToePageState extends State<TicTacToePage> {
         child: Center(
           child: Text(
             board[gridIndex][cellIndex],
-            style: const TextStyle(fontSize: 24.0),
+            style: TextStyle(
+                fontSize: 24.0,
+                color: (board[gridIndex][cellIndex] == 'X'
+                    ? Colors.red
+                    : Colors.white70)),
           ),
         ),
       ),
@@ -171,7 +173,11 @@ class _TicTacToePageState extends State<TicTacToePage> {
         setState(() {
           board[gridIndex][cellIndex] = currentPlayer;
           if (_checkForWinner(gridIndex)) {
+            winners[gridIndex] = currentPlayer;
             print("Player $currentPlayer wins in grid $gridIndex");
+            if (_checkForOverallWinner()) {
+              showWinner(currentPlayer);
+            }
           }
           currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
           activeGrid = cellIndex;
@@ -216,5 +222,53 @@ class _TicTacToePageState extends State<TicTacToePage> {
       return true;
     }
     return false;
+  }
+
+  bool _checkForOverallWinner() {
+    // Check for an overall winner across the main grid
+    for (int i = 0; i < 3; i++) {
+      // Check rows
+      if (winners[i * 3] == winners[i * 3 + 1] &&
+          winners[i * 3] == winners[i * 3 + 2] &&
+          winners[i * 3] != "") {
+        return true;
+      }
+      // Check columns
+      if (winners[i] == winners[i + 3] &&
+          winners[i] == winners[i + 6] &&
+          winners[i] != "") {
+        return true;
+      }
+    }
+    // Check diagonals
+    if (winners[0] == winners[4] &&
+        winners[0] == winners[8] &&
+        winners[0] != "") {
+      return true;
+    }
+    if (winners[2] == winners[4] &&
+        winners[2] == winners[6] &&
+        winners[2] != "") {
+      return true;
+    }
+    return false;
+  }
+
+  void showWinner(String winner) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(title: Text('$winner WON'), actions: [
+          ElevatedButton(
+            child: const Text("Play Again"),
+            onPressed: () {
+              _resetGame();
+              Navigator.of(context).pop();
+            },
+          )
+        ]);
+      },
+    );
   }
 }
