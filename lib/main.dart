@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,9 +47,23 @@ class TicTacToeNotifier extends ChangeNotifier {
           }
         }
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        activeGrid = cellIndex;
+        activeGrid = winners[cellIndex] != "" ? -1 : cellIndex;
         notifyListeners();
       }
+    }
+  }
+
+  bool isPlayableGrid(int gridIndex) {
+    // bool isActiveGrid = (activeGrid == gridIndex ||(activeGrid != -1 && winners[activeGrid] != ""));
+    bool isActiveGrid = (activeGrid == gridIndex);
+    bool isWonGrid = activeGrid != -1 && winners[activeGrid] != "";
+
+    if (activeGrid == -1 || isWonGrid) {
+      // If the larger grid is won, highlight all smaller grids
+      return true;
+    } else {
+      // Highlight the active smaller grid
+      return isActiveGrid;
     }
   }
 
@@ -132,7 +147,7 @@ class StartScreen extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             fixedSize: const Size(225, 75),
           ),
-          icon: const Icon(Icons.people),
+          icon: const Icon(CupertinoIcons.person_2_alt),
           onPressed: () {
             Provider.of<TicTacToeNotifier>(context, listen: false).resetGame();
             Navigator.push(
@@ -194,9 +209,30 @@ class _TicTacToePageState extends State<TicTacToePage> {
                         crossAxisCount: 3,
                       ),
                       itemBuilder: (context, index) {
-                        return Container(
-                          child: buildGrid(index, ticTacToeNotifier),
-                        );
+                        if (ticTacToeNotifier.winners[index] != "") {
+                          return Stack(
+                            children: [
+                              Container(
+                                child: buildGrid(index, ticTacToeNotifier),
+                              ),
+                              Image.asset(
+                                ticTacToeNotifier.winners[index] == "X"
+                                    ? 'assets/X.png'
+                                    : 'assets/O.png',
+                                width: 115,
+                                alignment: Alignment.bottomLeft,
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Stack(
+                            children: [
+                              Container(
+                                child: buildGrid(index, ticTacToeNotifier),
+                              ),
+                            ],
+                          );
+                        }
                       },
                     ),
                   ),
@@ -216,28 +252,28 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
   Widget buildGrid(int gridIndex, TicTacToeNotifier ticTacToeNotifier) {
     // for Outer Grid
-    bool isActiveGrid = (ticTacToeNotifier.activeGrid == gridIndex);
-    Color borderColor = isActiveGrid ? Colors.blue : Colors.grey;
+    bool isPlayable = ticTacToeNotifier.isPlayableGrid(gridIndex);
+    Color borderColor = isPlayable ? Colors.blue : Colors.grey;
     return Container(
       decoration: BoxDecoration(
         border: Border(
           left: BorderSide(
             color: borderColor,
-            width: (isActiveGrid) ? 2.0 : 0.000004,
+            width: (isPlayable) ? 2.0 : 0.000004,
           ),
           right: BorderSide(
             color: borderColor,
-            width: (gridIndex % 3 == 0 || gridIndex % 3 == 1 || isActiveGrid)
+            width: (gridIndex % 3 == 0 || gridIndex % 3 == 1 || isPlayable)
                 ? 2.0
                 : 0.000004,
           ),
           bottom: BorderSide(
             color: borderColor,
-            width: (gridIndex < 6 || isActiveGrid) ? 2.0 : 0.000004,
+            width: (gridIndex < 6 || isPlayable) ? 2.0 : 0.000004,
           ),
           top: BorderSide(
             color: borderColor,
-            width: (isActiveGrid) ? 2.0 : 0.000004,
+            width: (isPlayable) ? 2.0 : 0.000004,
           ),
         ),
       ),
