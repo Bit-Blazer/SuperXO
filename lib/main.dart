@@ -178,7 +178,6 @@ class _TicTacToePageState extends State<TicTacToePage> {
     ticTacToeNotifier.onWinnerFound = (winner) {
       showWinnerDialog(winner);
     };
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Super Tic-Tac-Toe'),
@@ -187,7 +186,19 @@ class _TicTacToePageState extends State<TicTacToePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Current Player: $ticTacToeNotifier.currentPlayer'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Current Player: '),
+                Image.asset(
+                  ticTacToeNotifier.currentPlayer == "X"
+                      ? 'assets/x.png'
+                      : 'assets/o.png',
+                  width: 15,
+                  alignment: Alignment.bottomLeft,
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             SizedBox(
               height: 375,
@@ -217,8 +228,8 @@ class _TicTacToePageState extends State<TicTacToePage> {
                               ),
                               Image.asset(
                                 ticTacToeNotifier.winners[index] == "X"
-                                    ? 'assets/X.png'
-                                    : 'assets/O.png',
+                                    ? 'assets/x.png'
+                                    : 'assets/o.png',
                                 width: 115,
                                 alignment: Alignment.bottomLeft,
                               ),
@@ -240,9 +251,13 @@ class _TicTacToePageState extends State<TicTacToePage> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                fixedSize: const Size(150, 50),
+              ),
+              icon: const Icon(CupertinoIcons.arrow_clockwise),
               onPressed: ticTacToeNotifier.resetGame,
-              child: const Text('Reset Game'),
+              label: const Text('Reset Game'),
             ),
           ],
         ),
@@ -337,8 +352,12 @@ class _TicTacToePageState extends State<TicTacToePage> {
         return AlertDialog(
           title: Text('$winner WON'),
           actions: [
-            ElevatedButton(
-              child: const Text("Play Again"),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                fixedSize: const Size(150, 50),
+              ),
+              icon: const Icon(CupertinoIcons.arrow_clockwise),
+              label: const Text("Play Again"),
               onPressed: () {
                 Provider.of<TicTacToeNotifier>(context, listen: false)
                     .resetGame();
