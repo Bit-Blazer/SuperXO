@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:confetti/confetti.dart';
 
 void main() {
   runApp(
@@ -31,9 +33,7 @@ class TicTacToeNotifier extends ChangeNotifier {
   String currentPlayer = 'X';
   int activeGrid = -1;
 
-  void Function(String winner)? onWinnerFound;
-
-  void tapAction(int gridIndex, int cellIndex) {
+  void tapAction(int gridIndex, int cellIndex, BuildContext context) {
     if (activeGrid == -1 || activeGrid == gridIndex) {
       if (board[gridIndex][cellIndex] == "") {
         board[gridIndex][cellIndex] = currentPlayer;
@@ -41,9 +41,7 @@ class TicTacToeNotifier extends ChangeNotifier {
           winners[gridIndex] = currentPlayer;
           print("Player $currentPlayer wins in grid $gridIndex");
           if (_checkForOverallWinner()) {
-            if (onWinnerFound != null) {
-              onWinnerFound!(currentPlayer);
-            }
+            showWinnerDialog(currentPlayer, context);
           }
         }
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
@@ -127,6 +125,32 @@ class TicTacToeNotifier extends ChangeNotifier {
     return false;
   }
 
+  void showWinnerDialog(String winner, BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$winner WON'),
+          actions: [
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                fixedSize: const Size(150, 50),
+              ),
+              icon: const Icon(CupertinoIcons.arrow_clockwise),
+              label: const Text("Play Again"),
+              onPressed: () {
+                Provider.of<TicTacToeNotifier>(context, listen: false)
+                    .resetGame();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void resetGame() {
     board = List.generate(9, (_) => List.generate(9, (_) => ""));
     winners = List.generate(9, (_) => "");
@@ -142,6 +166,10 @@ class StartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('SuperXO'),
+        centerTitle: true,
+      ),
       body: Center(
         child: OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
@@ -172,20 +200,47 @@ class TicTacToePage extends StatefulWidget {
 }
 
 class _TicTacToePageState extends State<TicTacToePage> {
+  late ConfettiController _confettiController;
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(
+        milliseconds: 800,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _confettiController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final ticTacToeNotifier = Provider.of<TicTacToeNotifier>(context);
-    ticTacToeNotifier.onWinnerFound = (winner) {
-      showWinnerDialog(winner);
-    };
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Super Tic-Tac-Toe'),
+        title: const Text('MultiPlayer'),
+        centerTitle: true,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Align(
+              alignment: Alignment.center,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                blastDirection: -pi / 2,
+                gravity: 0.1,
+                numberOfParticles: 20,
+                emissionFrequency: 0.2,
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -199,7 +254,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             SizedBox(
               height: 375,
               width: 375,
@@ -313,7 +368,10 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
     return GestureDetector(
       onTap: () {
-        ticTacToeNotifier.tapAction(gridIndex, cellIndex);
+        ticTacToeNotifier.tapAction(gridIndex, cellIndex, context);
+        if (ticTacToeNotifier._checkForOverallWinner()) {
+          _confettiController.play();
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -341,32 +399,6 @@ class _TicTacToePageState extends State<TicTacToePage> {
           ),
         ),
       ),
-    );
-  }
-
-  void showWinnerDialog(String winner) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('$winner WON'),
-          actions: [
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                fixedSize: const Size(150, 50),
-              ),
-              icon: const Icon(CupertinoIcons.arrow_clockwise),
-              label: const Text("Play Again"),
-              onPressed: () {
-                Provider.of<TicTacToeNotifier>(context, listen: false)
-                    .resetGame();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
