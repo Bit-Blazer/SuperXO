@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:superxo/pages/settings_page.dart';
 import 'package:superxo/pages/tictactoe_page.dart';
 import 'package:superxo/pages/tictactoe_provider.dart';
 import 'package:superxo/theme/theme.dart';
@@ -29,23 +31,66 @@ class StartScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-            fixedSize: const Size(225, 75),
-          ),
-          icon: const Icon(CupertinoIcons.person_2_alt),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChangeNotifierProvider(
-                  create: (_) => TicTacToeNotifier(),
-                  child: const TicTacToePage(),
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: Colors.grey[700],
+                side: const BorderSide(width: 5),
+                shape: const BeveledRectangleBorder(),
+                fixedSize: const Size(300, 85),
               ),
-            );
-          },
-          label: const Text('Start Multiplayer'),
+              icon: const Icon(CupertinoIcons.person_2_alt),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (_) => TicTacToeNotifier(),
+                      child: const TicTacToePage(),
+                    ),
+                  ),
+                );
+              },
+              label: const Text('Start Multiplayer'),
+            ),
+            const SizedBox(
+              height: 75,
+            ),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: Colors.grey[700],
+                side: const BorderSide(width: 5),
+                shape: const BeveledRectangleBorder(),
+                fixedSize: const Size(300, 85),
+              ),
+              icon: const Icon(CupertinoIcons.settings),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
+              label: const Text('Settings'),
+            ),
+            const SizedBox(
+              height: 75,
+            ),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: Colors.grey[700],
+                side: const BorderSide(width: 5),
+                shape: const BeveledRectangleBorder(),
+                fixedSize: const Size(300, 85),
+              ),
+              icon: const Icon(Icons.exit_to_app_rounded),
+              onPressed: () {
+                SystemChannels.platform.invokeMapMethod('SystemNavigator.pop');
+              },
+              label: const Text('Exit'),
+            ),
+          ],
         ),
       ),
     );
