@@ -70,7 +70,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                   ),
                 ),
                 Image.asset(
-                  ticTacToeNotifier.currentPlayer == "X"
+                  ticTacToeNotifier.currentPlayer == 'X'
                       ? 'assets/x.png'
                       : 'assets/o.png',
                   width: 15,
@@ -99,14 +99,14 @@ class _TicTacToePageState extends State<TicTacToePage> {
                         crossAxisCount: 3,
                       ),
                       itemBuilder: (context, index) {
-                        if (ticTacToeNotifier.winners[index] != "") {
+                        if (ticTacToeNotifier.winners[index] != '') {
                           return Stack(
                             children: [
                               Container(
                                 child: buildGrid(index, ticTacToeNotifier),
                               ),
                               Image.asset(
-                                ticTacToeNotifier.winners[index] == "X"
+                                ticTacToeNotifier.winners[index] == 'X'
                                     ? 'assets/x.png'
                                     : 'assets/o.png',
                                 width: 115,
