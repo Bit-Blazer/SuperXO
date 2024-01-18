@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TicTacToeNotifier extends ChangeNotifier {
   List<List<String>> board =
@@ -14,7 +13,6 @@ class TicTacToeNotifier extends ChangeNotifier {
         board[gridIndex][cellIndex] = currentPlayer;
         if (_checkForWinner(gridIndex)) {
           winners[gridIndex] = currentPlayer;
-          print("Player $currentPlayer wins in grid $gridIndex");
           if (checkForOverallWinner()) {
             showWinnerDialog(currentPlayer, context);
           }
@@ -106,17 +104,26 @@ class TicTacToeNotifier extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('$winner WON'),
+          title: Text(
+            '$winner WON',
+            style: const TextStyle(
+              fontFamily: 'Rammetto One',
+            ),
+          ),
           actions: [
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 fixedSize: const Size(150, 50),
               ),
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text("Play Again"),
+              label: const Text(
+                "Play Again",
+                style: TextStyle(
+                  fontFamily: 'Rammetto One',
+                ),
+              ),
               onPressed: () {
-                Provider.of<TicTacToeNotifier>(context, listen: false)
-                    .resetGame();
+                resetGame();
                 Navigator.of(context).pop();
               },
             ),

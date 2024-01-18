@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:superxo/pages/settings_page.dart';
-import 'package:superxo/pages/tictactoe_page.dart';
-import 'package:superxo/pages/tictactoe_provider.dart';
-import 'package:superxo/theme/theme.dart';
-import 'package:superxo/theme/theme_provider.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
+import '../theme/theme.dart';
+import '../theme/theme_provider.dart';
+import 'tictactoe_page.dart';
+import 'tictactoe_provider.dart';
+import 'settings_page.dart';
+import '../components/rounded_button.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -15,7 +16,12 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SuperXO'),
+        title: const Text(
+          'SuperXO',
+          style: TextStyle(
+            fontFamily: 'Rammetto One',
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -34,14 +40,8 @@ class StartScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.grey[700],
-                side: const BorderSide(width: 5),
-                shape: const BeveledRectangleBorder(),
-                fixedSize: const Size(300, 85),
-              ),
-              icon: const Icon(CupertinoIcons.person_2_alt),
+            CustomRoundedButton(
+              icon: CupertinoIcons.person_2_alt,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -53,42 +53,30 @@ class StartScreen extends StatelessWidget {
                   ),
                 );
               },
-              label: const Text('Start Multiplayer'),
+              label: 'Start Multiplayer',
             ),
             const SizedBox(
               height: 75,
             ),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.grey[700],
-                side: const BorderSide(width: 5),
-                shape: const BeveledRectangleBorder(),
-                fixedSize: const Size(300, 85),
-              ),
-              icon: const Icon(CupertinoIcons.settings),
+            CustomRoundedButton(
+              icon: CupertinoIcons.settings,
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
                 );
               },
-              label: const Text('Settings'),
+              label: 'Settings',
             ),
             const SizedBox(
               height: 75,
             ),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.grey[700],
-                side: const BorderSide(width: 5),
-                shape: const BeveledRectangleBorder(),
-                fixedSize: const Size(300, 85),
-              ),
-              icon: const Icon(Icons.exit_to_app_rounded),
+            CustomRoundedButton(
+              icon: Icons.exit_to_app_rounded,
               onPressed: () {
                 SystemChannels.platform.invokeMapMethod('SystemNavigator.pop');
               },
-              label: const Text('Exit'),
+              label: 'Exit',
             ),
           ],
         ),

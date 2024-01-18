@@ -1,9 +1,10 @@
-import 'dart:math';
-import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:superxo/pages/tictactoe_provider.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:confetti/confetti.dart';
+import 'dart:math';
+import '../components/rounded_button.dart';
+import 'tictactoe_provider.dart';
 
 class TicTacToePage extends StatefulWidget {
   const TicTacToePage({super.key});
@@ -36,7 +37,12 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MultiPlayer'),
+        title: const Text(
+          'MultiPlayer',
+          style: TextStyle(
+            fontFamily: 'Rammetto One',
+          ),
+        ),
         centerTitle: true,
       ),
       body: Center(
@@ -57,7 +63,12 @@ class _TicTacToePageState extends State<TicTacToePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Current Player: '),
+                const Text(
+                  'Current Player: ',
+                  style: TextStyle(
+                    fontFamily: 'Rammetto One',
+                  ),
+                ),
                 Image.asset(
                   ticTacToeNotifier.currentPlayer == "X"
                       ? 'assets/x.png'
@@ -84,7 +95,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: 9,
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                       ),
                       itemBuilder: (context, index) {
@@ -119,13 +130,10 @@ class _TicTacToePageState extends State<TicTacToePage> {
               ),
             ),
             const SizedBox(height: 20),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                fixedSize: const Size(150, 50),
-              ),
-              icon: const Icon(CupertinoIcons.arrow_clockwise),
+            CustomRoundedButton(
+              icon: CupertinoIcons.arrow_clockwise,
+              label: 'Reset Game',
               onPressed: ticTacToeNotifier.resetGame,
-              label: const Text('Reset Game'),
             ),
           ],
         ),
@@ -176,7 +184,10 @@ class _TicTacToePageState extends State<TicTacToePage> {
   }
 
   Widget buildGridCell(
-      int gridIndex, int cellIndex, TicTacToeNotifier ticTacToeNotifier) {
+    int gridIndex,
+    int cellIndex,
+    TicTacToeNotifier ticTacToeNotifier,
+  ) {
     // for Inner Grid
 
     return GestureDetector(
@@ -192,7 +203,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
             right: BorderSide(
               color: Colors.black,
               width:
-              (cellIndex % 3 == 0 || cellIndex % 3 == 1) ? 2.0 : 0.000004,
+                  (cellIndex % 3 == 0 || cellIndex % 3 == 1) ? 2.0 : 0.000004,
             ),
             bottom: BorderSide(
               color: Colors.black,
