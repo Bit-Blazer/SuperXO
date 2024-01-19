@@ -13,6 +13,9 @@ class TicTacToeNotifier extends ChangeNotifier {
         board[gridIndex][cellIndex] = currentPlayer;
         if (_checkForWinner(gridIndex)) {
           winners[gridIndex] = currentPlayer;
+          for (int i = 0; i < 9; i++) {
+            board[gridIndex][i] = '';
+          }
           if (checkForOverallWinner()) {
             showWinnerDialog(currentPlayer, context);
           }
@@ -108,7 +111,7 @@ class TicTacToeNotifier extends ChangeNotifier {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  currentPlayer == 'X' ? 'assets/x.png' : 'assets/o.png',
+                  winner == 'X' ? 'assets/images/x.png' : 'assets/images/o.png',
                   width: 30,
                   alignment: Alignment.center,
                 ),

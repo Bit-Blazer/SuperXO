@@ -71,10 +71,10 @@ class _TicTacToePageState extends State<TicTacToePage> {
                 ),
                 Image.asset(
                   ticTacToeNotifier.currentPlayer == 'X'
-                      ? 'assets/x.png'
-                      : 'assets/o.png',
+                      ? 'assets/images/x.png'
+                      : 'assets/images/o.png',
                   width: 15,
-                  alignment: Alignment.bottomLeft,
+                  alignment: Alignment.center,
                 ),
               ],
             ),
@@ -82,51 +82,42 @@ class _TicTacToePageState extends State<TicTacToePage> {
             SizedBox(
               height: 375,
               width: 375,
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 3.0,
-                      ),
-                    ),
-                    child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 9,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (ticTacToeNotifier.winners[index] != '') {
-                          return Stack(
-                            children: [
-                              Container(
-                                child: buildGrid(index, ticTacToeNotifier),
-                              ),
-                              Image.asset(
-                                ticTacToeNotifier.winners[index] == 'X'
-                                    ? 'assets/x.png'
-                                    : 'assets/o.png',
-                                width: 115,
-                                alignment: Alignment.bottomLeft,
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Stack(
-                            children: [
-                              Container(
-                                child: buildGrid(index, ticTacToeNotifier),
-                              ),
-                            ],
-                          );
-                        }
-                      },
-                    ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 3.0,
                   ),
-                ],
+                ),
+                child: GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 9,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                  ),
+                  itemBuilder: (context, index) {
+                    if (ticTacToeNotifier.winners[index] != '') {
+                      return Stack(
+                        children: [
+                          Container(
+                            child: buildGrid(index, ticTacToeNotifier),
+                          ),
+                          Image.asset(
+                            ticTacToeNotifier.winners[index] == 'X'
+                                ? 'assets/images/x.png'
+                                : 'assets/images/o.png',
+                            width: 115,
+                            alignment: Alignment.center,
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Container(
+                        child: buildGrid(index, ticTacToeNotifier),
+                      );
+                    }
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -212,14 +203,14 @@ class _TicTacToePageState extends State<TicTacToePage> {
           ),
         ),
         child: Center(
-          child: Text(
-            ticTacToeNotifier.board[gridIndex][cellIndex],
-            style: TextStyle(
-              fontSize: 24.0,
-              color: (ticTacToeNotifier.board[gridIndex][cellIndex] == 'X')
-                  ? Colors.red
-                  : Colors.white70,
-            ),
+          child: Image.asset(
+            ticTacToeNotifier.board[gridIndex][cellIndex] == ''
+                ? 'assets/images/-.png'
+                : ticTacToeNotifier.board[gridIndex][cellIndex] == 'X'
+                    ? 'assets/images/x.png'
+                    : 'assets/images/o.png',
+            alignment: Alignment.center,
+            width: 35,
           ),
         ),
       ),
