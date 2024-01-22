@@ -51,8 +51,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
                   return AlertDialog(
                     title: const Text('Rules'),
                     content: const SingleChildScrollView(
-                      child: Text(
-                        '''1. Game Board Structure:
+                      child: DefaultTextStyle(
+                        style: TextStyle(),
+                        child: Text('''1. Game Board Structure:
 - The game board is a 3x3 grid, where each cell represents a smaller Tic-Tac-Toe board.
 2. Player Moves:
 - On their turn, a player places their symbol (X or O) in an empty cell of the smaller Tic-Tac-Toe board.
@@ -63,7 +64,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
 5. Winning a Local Board:
 - To win a local board, a player must achieve three symbols in a row, either horizontally, vertically, or diagonally within that board.
 6. Game Objective:
-- The ultimate goal is to win three local boards consecutively.''',
+- The ultimate goal is to win three local boards consecutively.'''),
                       ),
                     ),
                     actions: [
@@ -155,7 +156,6 @@ class _TicTacToePageState extends State<TicTacToePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
             CustomRoundedButton(
               icon: CupertinoIcons.arrow_clockwise,
               label: 'Reset Game',

@@ -52,9 +52,6 @@ class StartScreen extends StatelessWidget {
               },
               label: 'Start Multiplayer',
             ),
-            const SizedBox(
-              height: 75,
-            ),
             CustomRoundedButton(
               icon: CupertinoIcons.settings,
               onPressed: () {
@@ -64,9 +61,6 @@ class StartScreen extends StatelessWidget {
                 );
               },
               label: 'Settings',
-            ),
-            const SizedBox(
-              height: 75,
             ),
             CustomRoundedButton(
               icon: Icons.exit_to_app_rounded,

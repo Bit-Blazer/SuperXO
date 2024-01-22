@@ -16,9 +16,6 @@ class AppProvider with ChangeNotifier {
   void tapAction(int gridIndex, int cellIndex) {
     player.play(AssetSource('audio/cell_tap.wav'));
     board[gridIndex][cellIndex] = currentPlayer;
-    for (int i = 0; i < 9; i++) {
-      print(board[i]);
-    }
     if (checkForMiniGridWin(gridIndex)) {
       player.play(AssetSource('audio/local_win.wav'));
       winners[gridIndex] = currentPlayer;
