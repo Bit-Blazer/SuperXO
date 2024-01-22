@@ -25,11 +25,6 @@ class CustomRoundedButton extends StatelessWidget {
             width: 5,
           ),
         ),
-        textStyle: const TextStyle(
-          fontSize: 17,
-          fontFamily: 'Rammetto One',
-        ),
-        //backgroundColor: Theme.of(context).buttonColor,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

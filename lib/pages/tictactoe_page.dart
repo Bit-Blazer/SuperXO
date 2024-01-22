@@ -33,17 +33,54 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ticTacToeNotifier = Provider.of<TicTacToeNotifier>(context);
+    final prov = Provider.of<AppProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'MultiPlayer',
-          style: TextStyle(
-            fontFamily: 'Rammetto One',
-          ),
-        ),
+        title: const Text('MultiPlayer'),
         centerTitle: true,
+        actions: [
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(elevation: 0),
+            label: const Text('Rules'),
+            icon: const Icon(Icons.info),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Rules'),
+                    content: const SingleChildScrollView(
+                      child: Text(
+                        '''1. Game Board Structure:
+- The game board is a 3x3 grid, where each cell represents a smaller Tic-Tac-Toe board.
+2. Player Moves:
+- On their turn, a player places their symbol (X or O) in an empty cell of the smaller Tic-Tac-Toe board.
+3. Sequential Local Board Selection:
+- The cell in the local board where a player makes a move determines the local board on which the next player must play.
+4. Player Options:
+- The next player can choose to play in any cell within the local board that the previous player selected.
+5. Winning a Local Board:
+- To win a local board, a player must achieve three symbols in a row, either horizontally, vertically, or diagonally within that board.
+6. Game Objective:
+- The ultimate goal is to win three local boards consecutively.''',
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          // Close the dialog
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Close'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -63,14 +100,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Current Player: ',
-                  style: TextStyle(
-                    fontFamily: 'Rammetto One',
-                  ),
-                ),
+                const Text('Current Player: '),
                 Image.asset(
-                  ticTacToeNotifier.currentPlayer == 'X'
+                  prov.currentPlayer == 'X'
                       ? 'assets/images/x.png'
                       : 'assets/images/o.png',
                   width: 15,
@@ -96,16 +128,19 @@ class _TicTacToePageState extends State<TicTacToePage> {
                     crossAxisCount: 3,
                   ),
                   itemBuilder: (context, index) {
-                    if (ticTacToeNotifier.winners[index] != '') {
+                    if (prov.winners[index] != '') {
                       return Stack(
+                        alignment: Alignment.center,
                         children: [
                           Container(
-                            child: buildGrid(index, ticTacToeNotifier),
+                            child: buildGrid(index, prov),
                           ),
                           Image.asset(
-                            ticTacToeNotifier.winners[index] == 'X'
-                                ? 'assets/images/x.png'
-                                : 'assets/images/o.png',
+                            prov.winners[index] == 'D'
+                                ? 'assets/images/draw.png'
+                                : prov.winners[index] == 'X'
+                                    ? 'assets/images/x.png'
+                                    : 'assets/images/o.png',
                             width: 115,
                             alignment: Alignment.center,
                           ),
@@ -113,7 +148,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                       );
                     } else {
                       return Container(
-                        child: buildGrid(index, ticTacToeNotifier),
+                        child: buildGrid(index, prov),
                       );
                     }
                   },
@@ -124,7 +159,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
             CustomRoundedButton(
               icon: CupertinoIcons.arrow_clockwise,
               label: 'Reset Game',
-              onPressed: ticTacToeNotifier.resetGame,
+              onPressed: prov.resetGame,
             ),
           ],
         ),
@@ -132,7 +167,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
     );
   }
 
-  Widget buildGrid(int gridIndex, TicTacToeNotifier ticTacToeNotifier) {
+  Widget buildGrid(int gridIndex, AppProvider ticTacToeNotifier) {
     // for Outer Grid
     bool isPlayable = ticTacToeNotifier.isPlayableGrid(gridIndex);
     Color borderColor = isPlayable ? Colors.blue : Colors.grey;
@@ -177,15 +212,25 @@ class _TicTacToePageState extends State<TicTacToePage> {
   Widget buildGridCell(
     int gridIndex,
     int cellIndex,
-    TicTacToeNotifier ticTacToeNotifier,
+    AppProvider ticTacToeNotifier,
   ) {
     // for Inner Grid
 
     return GestureDetector(
       onTap: () {
-        ticTacToeNotifier.tapAction(gridIndex, cellIndex, context);
-        if (ticTacToeNotifier.checkForOverallWinner()) {
-          _confettiController.play();
+        if (ticTacToeNotifier.board[gridIndex][cellIndex] == '' &&
+            (ticTacToeNotifier.activeGrid == -1 ||
+                ticTacToeNotifier.activeGrid == gridIndex)) {
+          ticTacToeNotifier.tapAction(gridIndex, cellIndex);
+          if (ticTacToeNotifier.isWon) {
+            showWinnerDialog(
+              ticTacToeNotifier.currentPlayer,
+              ticTacToeNotifier,
+            );
+            _confettiController.play();
+          } else if (ticTacToeNotifier.isDraw) {
+            showWinnerDialog('Draw', ticTacToeNotifier);
+          }
         }
       },
       child: Container(
@@ -215,5 +260,72 @@ class _TicTacToePageState extends State<TicTacToePage> {
         ),
       ),
     );
+  }
+
+  void showWinnerDialog(String winner, AppProvider ticTacToeNotifier) {
+    if (winner == 'Draw') {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Center(
+              child: Text('Game is Draw'),
+            ),
+            actions: [
+              Center(
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Play Again'),
+                  onPressed: () {
+                    ticTacToeNotifier.resetGame();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+            actionsAlignment: MainAxisAlignment.center,
+            actionsOverflowAlignment: OverflowBarAlignment.center,
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    winner == 'X'
+                        ? 'assets/images/x.png'
+                        : 'assets/images/o.png',
+                    width: 30,
+                    alignment: Alignment.center,
+                  ),
+                  const Text(' WON the Game'),
+                ],
+              ),
+            ),
+            actions: [
+              Center(
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Play Again'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+            actionsAlignment: MainAxisAlignment.center,
+            actionsOverflowAlignment: OverflowBarAlignment.center,
+          );
+        },
+      );
+    }
   }
 }

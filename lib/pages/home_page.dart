@@ -16,12 +16,7 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'SuperXO',
-          style: TextStyle(
-            fontFamily: 'Rammetto One',
-          ),
-        ),
+        title: const Text('SuperXO'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -38,16 +33,18 @@ class StartScreen extends StatelessWidget {
       ),
       body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomRoundedButton(
               icon: CupertinoIcons.person_2_alt,
               onPressed: () {
+                SystemSound.play(SystemSoundType.click);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChangeNotifierProvider(
-                      create: (_) => TicTacToeNotifier(),
+                      create: (_) => AppProvider(),
                       child: const TicTacToePage(),
                     ),
                   ),

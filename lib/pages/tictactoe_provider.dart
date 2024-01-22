@@ -1,34 +1,42 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-class TicTacToeNotifier extends ChangeNotifier {
+class AppProvider with ChangeNotifier {
+  final player = AudioPlayer();
   List<List<String>> board =
       List.generate(9, (_) => List.generate(9, (_) => ''));
   List<String> winners = List.generate(9, (_) => '');
   String currentPlayer = 'X';
   int activeGrid = -1;
+  bool isDraw = false;
+  bool isWon = false;
+  bool isSoundOn = true;
+  bool isMusicOn = true;
 
-  void tapAction(int gridIndex, int cellIndex, BuildContext context) {
-    if (activeGrid == -1 || activeGrid == gridIndex) {
-      if (board[gridIndex][cellIndex] == '') {
-        board[gridIndex][cellIndex] = currentPlayer;
-        if (_checkForWinner(gridIndex)) {
-          winners[gridIndex] = currentPlayer;
-          for (int i = 0; i < 9; i++) {
-            board[gridIndex][i] = '';
-          }
-          if (checkForOverallWinner()) {
-            showWinnerDialog(currentPlayer, context);
-          }
-        }
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        activeGrid = winners[cellIndex] != '' ? -1 : cellIndex;
-        notifyListeners();
-      }
+  void tapAction(int gridIndex, int cellIndex) {
+    player.play(AssetSource('audio/cell_tap.wav'));
+    board[gridIndex][cellIndex] = currentPlayer;
+    for (int i = 0; i < 9; i++) {
+      print(board[i]);
     }
+    if (checkForMiniGridWin(gridIndex)) {
+      player.play(AssetSource('audio/local_win.wav'));
+      winners[gridIndex] = currentPlayer;
+      resetMiniGrid(gridIndex);
+      isWon = checkForOverallGridWin();
+    }
+    if (!isWon) {
+      currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+      activeGrid = winners[cellIndex] != '' && winners[cellIndex] != 'D'
+          ? -1
+          : cellIndex;
+    } else {
+      player.play(AssetSource('audio/global_win.wav'));
+    }
+    notifyListeners();
   }
 
   bool isPlayableGrid(int gridIndex) {
-    // bool isActiveGrid = (activeGrid == gridIndex ||(activeGrid != -1 && winners[activeGrid] != ""));
     bool isActiveGrid = (activeGrid == gridIndex);
     bool isWonGrid = activeGrid != -1 && winners[activeGrid] != '';
 
@@ -41,7 +49,7 @@ class TicTacToeNotifier extends ChangeNotifier {
     }
   }
 
-  bool _checkForWinner(int gridIndex) {
+  bool checkForMiniGridWin(int gridIndex) {
     // Check for a winner in the smaller grid
     for (int i = 0; i < 3; i++) {
       // Check rows
@@ -68,10 +76,13 @@ class TicTacToeNotifier extends ChangeNotifier {
         board[gridIndex][2] != '') {
       return true;
     }
+    if (checkForDraw(gridIndex)) {
+      winners[gridIndex] = 'D';
+    }
     return false;
   }
 
-  bool checkForOverallWinner() {
+  bool checkForOverallGridWin() {
     // Check for an overall winner across the main grid
     for (int i = 0; i < 3; i++) {
       // Check rows
@@ -98,55 +109,26 @@ class TicTacToeNotifier extends ChangeNotifier {
         winners[2] != '') {
       return true;
     }
+    checkForOverallDraw();
     return false;
   }
 
-  void showWinnerDialog(String winner, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  winner == 'X' ? 'assets/images/x.png' : 'assets/images/o.png',
-                  width: 30,
-                  alignment: Alignment.center,
-                ),
-                const Text(
-                  ' WON the Game',
-                  style: TextStyle(
-                    fontFamily: 'Rammetto One',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            Center(
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(),
-                icon: const Icon(Icons.refresh),
-                label: const Text(
-                  'Play Again',
-                  style: TextStyle(
-                    fontFamily: 'Rammetto One',
-                  ),
-                ),
-                onPressed: () {
-                  resetGame();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-          actionsAlignment: MainAxisAlignment.center,
-          actionsOverflowAlignment: OverflowBarAlignment.center,
-        );
-      },
-    );
+  bool checkForDraw(int gridIndex) {
+    for (int i = 0; i < 9; i++) {
+      if (board[gridIndex][i] == '') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void checkForOverallDraw() {
+    isDraw = true;
+    for (int i = 0; i < 9; i++) {
+      if (winners[i] == '') {
+        isDraw = false;
+      }
+    }
   }
 
   void resetGame() {
@@ -154,6 +136,14 @@ class TicTacToeNotifier extends ChangeNotifier {
     winners = List.generate(9, (_) => '');
     currentPlayer = 'X';
     activeGrid = -1;
+    isDraw = false;
+    isWon = false;
     notifyListeners();
+  }
+
+  void resetMiniGrid(int gridIndex) {
+    for (int i = 0; i < 9; i++) {
+      board[gridIndex][i] = '';
+    }
   }
 }
