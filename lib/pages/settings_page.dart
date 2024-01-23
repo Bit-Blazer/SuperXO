@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'tictactoe_provider.dart';
+import 'app_provider.dart';
 import '../components/rounded_button.dart';
 
 class SettingsPage extends StatefulWidget {

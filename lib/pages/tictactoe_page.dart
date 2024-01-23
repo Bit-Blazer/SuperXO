@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
 import '../components/rounded_button.dart';
-import 'tictactoe_provider.dart';
+import 'app_provider.dart';
 
 class TicTacToePage extends StatefulWidget {
   const TicTacToePage({super.key});
@@ -98,20 +98,22 @@ class _TicTacToePageState extends State<TicTacToePage> {
                 emissionFrequency: 0.2,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Current Player: '),
-                Image.asset(
-                  prov.currentPlayer == 'X'
-                      ? 'assets/images/x.png'
-                      : 'assets/images/o.png',
-                  width: 15,
-                  alignment: Alignment.center,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Current Player: '),
+                  Image.asset(
+                    prov.currentPlayer == 'X'
+                        ? 'assets/images/x.png'
+                        : 'assets/images/o.png',
+                    width: 15,
+                    alignment: Alignment.center,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 15),
             SizedBox(
               height: 375,
               width: 375,
@@ -212,24 +214,17 @@ class _TicTacToePageState extends State<TicTacToePage> {
   Widget buildGridCell(
     int gridIndex,
     int cellIndex,
-    AppProvider ticTacToeNotifier,
+    AppProvider prov,
   ) {
     // for Inner Grid
 
     return GestureDetector(
       onTap: () {
-        if (ticTacToeNotifier.board[gridIndex][cellIndex] == '' &&
-            (ticTacToeNotifier.activeGrid == -1 ||
-                ticTacToeNotifier.activeGrid == gridIndex)) {
-          ticTacToeNotifier.tapAction(gridIndex, cellIndex);
-          if (ticTacToeNotifier.isWon) {
-            showWinnerDialog(
-              ticTacToeNotifier.currentPlayer,
-              ticTacToeNotifier,
-            );
-            _confettiController.play();
-          } else if (ticTacToeNotifier.isDraw) {
-            showWinnerDialog('Draw', ticTacToeNotifier);
+        if (prov.board[gridIndex][cellIndex] == '' &&
+            (prov.activeGrid == -1 || prov.activeGrid == gridIndex)) {
+          prov.tapAction(gridIndex, cellIndex);
+          if (prov.isWon || prov.isDraw) {
+            showWinnerDialog(prov);
           }
         }
       },
@@ -249,9 +244,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
         ),
         child: Center(
           child: Image.asset(
-            ticTacToeNotifier.board[gridIndex][cellIndex] == ''
+            prov.board[gridIndex][cellIndex] == ''
                 ? 'assets/images/-.png'
-                : ticTacToeNotifier.board[gridIndex][cellIndex] == 'X'
+                : prov.board[gridIndex][cellIndex] == 'X'
                     ? 'assets/images/x.png'
                     : 'assets/images/o.png',
             alignment: Alignment.center,
@@ -262,70 +257,49 @@ class _TicTacToePageState extends State<TicTacToePage> {
     );
   }
 
-  void showWinnerDialog(String winner, AppProvider ticTacToeNotifier) {
-    if (winner == 'Draw') {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Center(
-              child: Text('Game is Draw'),
-            ),
-            actions: [
-              Center(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(),
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Play Again'),
-                  onPressed: () {
-                    ticTacToeNotifier.resetGame();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ],
-            actionsAlignment: MainAxisAlignment.center,
-            actionsOverflowAlignment: OverflowBarAlignment.center,
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    winner == 'X'
-                        ? 'assets/images/x.png'
-                        : 'assets/images/o.png',
-                    width: 30,
-                    alignment: Alignment.center,
-                  ),
-                  const Text(' WON the Game'),
-                ],
-              ),
-            ),
-            actions: [
-              Center(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(),
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Play Again'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ],
-            actionsAlignment: MainAxisAlignment.center,
-            actionsOverflowAlignment: OverflowBarAlignment.center,
-          );
-        },
-      );
+  void showWinnerDialog(AppProvider prov) {
+    if (prov.isWon) {
+      _confettiController.play();
     }
+    String asset = prov.isDraw
+        ? 'assets/images/draw.png'
+        : prov.currentPlayer == 'X'
+            ? 'assets/images/x.png'
+            : 'assets/images/o.png';
+    String text = prov.isDraw ? ' Game is Draw' : ' WON the Game';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  asset,
+                  width: 30,
+                ),
+                Text(text),
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Play Again'),
+                onPressed: () {
+                  prov.resetGame();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.center,
+        );
+      },
+    );
   }
 }

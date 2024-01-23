@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/tictactoe_provider.dart';
+import 'pages/app_provider.dart';
 import 'theme/theme_provider.dart';
 import 'pages/home_page.dart';
 

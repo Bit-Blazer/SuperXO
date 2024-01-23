@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import '../theme/theme.dart';
 import '../theme/theme_provider.dart';
 import 'tictactoe_page.dart';
-import 'tictactoe_provider.dart';
+import 'app_provider.dart';
 import 'settings_page.dart';
 import '../components/rounded_button.dart';
 
@@ -22,8 +22,8 @@ class StartScreen extends StatelessWidget {
           IconButton(
             icon: Icon(
               Provider.of<ThemeProvider>(context).themeData == lightMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
             ),
             onPressed: () {
               Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
