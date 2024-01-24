@@ -105,7 +105,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                 children: [
                   const Text('Current Player: '),
                   Image.asset(
-                    prov.currentPlayer == 'X'
+                    prov.currentPlayer == CellState.X
                         ? 'assets/images/x.png'
                         : 'assets/images/o.png',
                     width: 15,
@@ -131,7 +131,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                     crossAxisCount: 3,
                   ),
                   itemBuilder: (context, index) {
-                    if (prov.winners[index] != '') {
+                    if (prov.winners[index] != GridState.notWon) {
                       return Stack(
                         alignment: Alignment.center,
                         children: [
@@ -139,9 +139,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
                             child: buildGrid(index, prov),
                           ),
                           Image.asset(
-                            prov.winners[index] == 'D'
+                            prov.winners[index] == GridState.draw
                                 ? 'assets/images/draw.png'
-                                : prov.winners[index] == 'X'
+                                : prov.winners[index] == GridState.wonByX
                                     ? 'assets/images/x.png'
                                     : 'assets/images/o.png',
                             width: 115,
@@ -220,7 +220,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
     return GestureDetector(
       onTap: () {
-        if (prov.board[gridIndex][cellIndex] == '' &&
+        if (prov.board[gridIndex][cellIndex] == CellState.empty &&
             (prov.activeGrid == -1 || prov.activeGrid == gridIndex)) {
           prov.tapAction(gridIndex, cellIndex);
           if (prov.isWon || prov.isDraw) {
@@ -244,9 +244,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
         ),
         child: Center(
           child: Image.asset(
-            prov.board[gridIndex][cellIndex] == ''
+            prov.board[gridIndex][cellIndex] == CellState.empty
                 ? 'assets/images/-.png'
-                : prov.board[gridIndex][cellIndex] == 'X'
+                : prov.board[gridIndex][cellIndex] == CellState.X
                     ? 'assets/images/x.png'
                     : 'assets/images/o.png',
             alignment: Alignment.center,
@@ -263,7 +263,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
     }
     String asset = prov.isDraw
         ? 'assets/images/draw.png'
-        : prov.currentPlayer == 'X'
+        : prov.currentPlayer == CellState.X
             ? 'assets/images/x.png'
             : 'assets/images/o.png';
     String text = prov.isDraw ? ' Game is Draw' : ' WON the Game';
