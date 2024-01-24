@@ -9,7 +9,7 @@ ThemeData lightMode = ThemeData(
   appBarTheme: const AppBarTheme(
     systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
-  colorScheme: const ColorScheme.light(),
+  colorSchemeSeed: Colors.deepOrange,
 );
 
 ThemeData darkMode = ThemeData(
@@ -20,5 +20,5 @@ ThemeData darkMode = ThemeData(
   appBarTheme: const AppBarTheme(
     systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
-  colorScheme: const ColorScheme.dark(),
+  colorSchemeSeed: Colors.teal,
 );

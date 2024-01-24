@@ -14,21 +14,24 @@ class AppProvider with ChangeNotifier {
   bool isMusicOn = true;
 
   void tapAction(int gridIndex, int cellIndex) {
-    player.play(AssetSource('audio/cell_tap.wav'));
     board[gridIndex][cellIndex] = currentPlayer;
     if (checkForMiniGridWin(gridIndex)) {
-      player.play(AssetSource('audio/local_win.wav'));
       winners[gridIndex] = currentPlayer;
       resetMiniGrid(gridIndex);
       isWon = checkForOverallGridWin();
+      if (isWon) {
+        globalWinSound();
+      } else {
+        localWinSound();
+      }
+    } else {
+      tapSound();
     }
     if (!isWon) {
       currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
       activeGrid = winners[cellIndex] != '' && winners[cellIndex] != 'D'
           ? -1
           : cellIndex;
-    } else {
-      player.play(AssetSource('audio/global_win.wav'));
     }
     notifyListeners();
   }
@@ -141,6 +144,36 @@ class AppProvider with ChangeNotifier {
   void resetMiniGrid(int gridIndex) {
     for (int i = 0; i < 9; i++) {
       board[gridIndex][i] = '';
+    }
+  }
+
+  void tapSound() {
+    if (isSoundOn) {
+      player.stop();
+      player.play(
+        mode: PlayerMode.lowLatency,
+        AssetSource('audio/cell_tap.wav'),
+      );
+    }
+  }
+
+  void localWinSound() {
+    if (isSoundOn) {
+      player.stop();
+      player.play(
+        mode: PlayerMode.lowLatency,
+        AssetSource('audio/local_win.wav'),
+      );
+    }
+  }
+
+  void globalWinSound() {
+    if (isSoundOn) {
+      player.stop();
+      player.play(
+        mode: PlayerMode.lowLatency,
+        AssetSource('audio/global_win.wav'),
+      );
     }
   }
 }
