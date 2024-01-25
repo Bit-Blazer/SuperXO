@@ -43,7 +43,8 @@ class AppProvider with ChangeNotifier {
     }
     if (!isWon) {
       currentPlayer = currentPlayer == CellState.X ? CellState.O : CellState.X;
-      activeGrid = winners[cellIndex] != GridState.notWon && winners[cellIndex] != GridState.draw
+      activeGrid = winners[cellIndex] != GridState.notWon &&
+              winners[cellIndex] != GridState.draw
           ? -1
           : cellIndex;
     }
@@ -52,7 +53,8 @@ class AppProvider with ChangeNotifier {
 
   bool isPlayableGrid(int gridIndex) {
     bool isActiveGrid = (activeGrid == gridIndex);
-    bool isWonGrid = activeGrid != -1 && winners[activeGrid] != GridState.notWon;
+    bool isWonGrid =
+        activeGrid != -1 && winners[activeGrid] != GridState.notWon;
 
     if (activeGrid == -1 || isWonGrid) {
       // If the larger grid is won, highlight all smaller grids
@@ -92,6 +94,8 @@ class AppProvider with ChangeNotifier {
     }
     if (checkForDraw(gridIndex)) {
       winners[gridIndex] = GridState.draw;
+      resetMiniGrid(gridIndex);
+      checkForOverallDraw();
     }
     return false;
   }
@@ -146,8 +150,7 @@ class AppProvider with ChangeNotifier {
   }
 
   void resetGame() {
-    board =
-    List.generate(9, (_) => List.filled(9, CellState.empty));
+    board = List.generate(9, (_) => List.filled(9, CellState.empty));
     winners = List.filled(9, GridState.notWon);
     currentPlayer = CellState.X;
     activeGrid = -1;

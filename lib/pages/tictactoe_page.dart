@@ -85,7 +85,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Align(
               alignment: Alignment.center,
@@ -114,48 +114,53 @@ class _TicTacToePageState extends State<TicTacToePage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 375,
-              width: 375,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 3.0,
-                  ),
-                ),
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 9,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemBuilder: (context, index) {
-                    if (prov.winners[index] != GridState.notWon) {
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            child: buildGrid(index, prov),
-                          ),
-                          Image.asset(
-                            prov.winners[index] == GridState.draw
-                                ? 'assets/images/draw.png'
-                                : prov.winners[index] == GridState.wonByX
-                                    ? 'assets/images/x.png'
-                                    : 'assets/images/o.png',
-                            width: 115,
-                            alignment: Alignment.center,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Container(
-                        child: buildGrid(index, prov),
-                      );
-                    }
-                  },
-                ),
+            Flexible(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  double maxWidth = constraints.maxWidth * 0.9;
+                  double maxHeight = constraints.maxHeight * 0.9;
+                  double squareSize =
+                      maxWidth < maxHeight ? maxWidth : maxHeight;
+                  return Container(
+                    width: squareSize,
+                    height: squareSize,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 3.0,
+                      ),
+                    ),
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 9,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      itemBuilder: (context, index) {
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            buildGrid(index, prov),
+                            Visibility(
+                              visible: prov.winners[index] != GridState.notWon,
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Image.asset(
+                                  prov.winners[index] == GridState.draw
+                                      ? 'assets/images/draw.png'
+                                      : prov.winners[index] == GridState.wonByX
+                                          ? 'assets/images/x.png'
+                                          : 'assets/images/o.png',
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
             CustomRoundedButton(
@@ -203,9 +208,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
           crossAxisCount: 3,
         ),
         itemBuilder: (context, index) {
-          return Container(
-            child: buildGridCell(gridIndex, index, ticTacToeNotifier),
-          );
+          return buildGridCell(gridIndex, index, ticTacToeNotifier);
         },
       ),
     );
@@ -242,15 +245,14 @@ class _TicTacToePageState extends State<TicTacToePage> {
             ),
           ),
         ),
-        child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
           child: Image.asset(
             prov.board[gridIndex][cellIndex] == CellState.empty
                 ? 'assets/images/-.png'
                 : prov.board[gridIndex][cellIndex] == CellState.X
                     ? 'assets/images/x.png'
                     : 'assets/images/o.png',
-            alignment: Alignment.center,
-            width: 35,
           ),
         ),
       ),

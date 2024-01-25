@@ -34,7 +34,6 @@ class StartScreen extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomRoundedButton(
               icon: CupertinoIcons.person_2_alt,
