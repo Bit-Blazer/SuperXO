@@ -16,6 +16,10 @@ enum GridState {
 
 class AppProvider with ChangeNotifier {
   final player = AudioPlayer();
+  final sound1 = AssetSource('audio/cell_tap.wav');
+  final sound2 = AssetSource('audio/local_win.wav');
+  final sound3 = AssetSource('audio/global_win.wav');
+
   List<List<CellState>> board =
       List.generate(9, (_) => List.filled(9, CellState.empty));
   List<GridState> winners = List.filled(9, GridState.notWon);
@@ -43,10 +47,7 @@ class AppProvider with ChangeNotifier {
     }
     if (!isWon) {
       currentPlayer = currentPlayer == CellState.X ? CellState.O : CellState.X;
-      activeGrid = winners[cellIndex] != GridState.notWon &&
-              winners[cellIndex] != GridState.draw
-          ? -1
-          : cellIndex;
+      activeGrid = winners[cellIndex] != GridState.notWon ? -1 : cellIndex;
     }
     notifyListeners();
   }
@@ -165,32 +166,26 @@ class AppProvider with ChangeNotifier {
     }
   }
 
-  void tapSound() {
+  void tapSound() async {
     if (isSoundOn) {
-      player.stop();
-      player.play(
-        mode: PlayerMode.lowLatency,
-        AssetSource('audio/cell_tap.wav'),
+      await player.play(
+        sound1,
       );
     }
   }
 
-  void localWinSound() {
+  void localWinSound() async {
     if (isSoundOn) {
-      player.stop();
-      player.play(
-        mode: PlayerMode.lowLatency,
-        AssetSource('audio/local_win.wav'),
+      await player.play(
+        sound2,
       );
     }
   }
 
-  void globalWinSound() {
+  void globalWinSound() async {
     if (isSoundOn) {
-      player.stop();
-      player.play(
-        mode: PlayerMode.lowLatency,
-        AssetSource('audio/global_win.wav'),
+      await player.play(
+        sound3,
       );
     }
   }
