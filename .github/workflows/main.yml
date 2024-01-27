@@ -2,7 +2,7 @@ name: Github-Pages-File
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
