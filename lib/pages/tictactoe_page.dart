@@ -183,7 +183,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
         border: Border(
           left: BorderSide(
             color: borderColor,
-            width: (isPlayable) ? 2.0 : 0.000004,
+            width: isPlayable ? 2.0 : 0.000004,
           ),
           right: BorderSide(
             color: borderColor,
@@ -197,7 +197,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
           ),
           top: BorderSide(
             color: borderColor,
-            width: (isPlayable) ? 2.0 : 0.000004,
+            width: isPlayable ? 2.0 : 0.000004,
           ),
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:superxo/theme/theme.dart';
+import 'theme.dart';
 
 class ThemeProvider with ChangeNotifier {
   ThemeData _themeData = darkMode;
