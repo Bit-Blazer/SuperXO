@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,23 @@ class TicTacToePage extends StatefulWidget {
 }
 
 class _TicTacToePageState extends State<TicTacToePage> {
+  late ConfettiController _confettiController;
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(
+        milliseconds: 800,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _confettiController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<TicTacToeProvider>(context);
@@ -26,6 +44,17 @@ class _TicTacToePageState extends State<TicTacToePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Align(
+              alignment: Alignment.center,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                blastDirection: -180 / 2,
+                gravity: 0.1,
+                numberOfParticles: 20,
+                emissionFrequency: 0.2,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Row(
@@ -71,12 +100,16 @@ class _TicTacToePageState extends State<TicTacToePage> {
                           onTap: () {
                             if (prov.board[index] == CellState.empty) {
                               prov.tapAction(index);
+                              if (prov.isWon || prov.isDraw) {
+                                showWinnerDialog(prov);
+                              }
                             }
                           },
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.black,
+                                strokeAlign: 1.0,
+                                color: Colors.grey,
                               ),
                             ),
                             child: Padding(
@@ -105,6 +138,52 @@ class _TicTacToePageState extends State<TicTacToePage> {
           ],
         ),
       ),
+    );
+  }
+
+  void showWinnerDialog(TicTacToeProvider prov) {
+    if (prov.isWon) {
+      _confettiController.play();
+    }
+    String asset = prov.isDraw
+        ? 'assets/images/draw.png'
+        : prov.currentPlayer == CellState.X
+            ? 'assets/images/x.png'
+            : 'assets/images/o.png';
+    String text = prov.isDraw ? ' Game is Draw' : ' WON the Game';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  asset,
+                  width: 30,
+                ),
+                Text(text),
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Play Again'),
+                onPressed: () {
+                  prov.resetGame();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.center,
+        );
+      },
     );
   }
 }

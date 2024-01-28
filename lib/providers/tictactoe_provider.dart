@@ -9,20 +9,21 @@ enum CellState {
 class TicTacToeProvider with ChangeNotifier {
   List<CellState> board = List.filled(9, CellState.empty);
   CellState currentPlayer = CellState.X;
+  bool isWon = false;
+  bool isDraw = false;
+
+  void tapAction(int index) {
+    board[index] = currentPlayer;
+    isWon = checkForWin();
+    if (!isWon) {
+      currentPlayer = currentPlayer == CellState.X ? CellState.O : CellState.X;
+    }
+    notifyListeners();
+  }
 
   void resetGame() {
     board = List.filled(9, CellState.empty);
     currentPlayer = CellState.X;
-    notifyListeners();
-  }
-
-  void tapAction(int index) {
-    board[index] = currentPlayer;
-    if (checkForWin()) {
-      board = List.filled(9, currentPlayer);
-    }
-
-    currentPlayer = currentPlayer == CellState.X ? CellState.O : CellState.X;
     notifyListeners();
   }
 
@@ -52,6 +53,16 @@ class TicTacToeProvider with ChangeNotifier {
         board[2] != CellState.empty) {
       return true;
     }
+    checkForDraw();
     return false;
+  }
+
+  void checkForDraw() {
+    isDraw = true;
+    for (int i = 0; i < 9; i++) {
+      if (board[i] == CellState.empty) {
+        isDraw = false;
+      }
+    }
   }
 }
