@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/app_provider.dart';
-import 'theme/theme_provider.dart';
+import 'providers/super_tictactoe_provider.dart';
+import 'providers/app_provider.dart';
 import 'pages/home_page.dart';
 
 void main() async {
@@ -20,8 +20,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AppProvider()),
+        ChangeNotifierProvider(create: (_) => SuperTicTacToeProvider()),
       ],
       child: const MyApp(),
     ),
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: Provider.of<ThemeProvider>(context).themeData,
+      theme: Provider.of<AppProvider>(context).themeData,
       home: const StartScreen(),
     );
   }

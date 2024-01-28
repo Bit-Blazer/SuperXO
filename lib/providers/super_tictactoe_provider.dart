@@ -14,7 +14,7 @@ enum GridState {
   draw,
 }
 
-class AppProvider with ChangeNotifier {
+class SuperTicTacToeProvider with ChangeNotifier {
   final player = AudioPlayer();
   final sound1 = AssetSource('audio/cell_tap.wav');
   final sound2 = AssetSource('audio/local_win.wav');

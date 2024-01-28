@@ -4,16 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
 import '../components/rounded_button.dart';
-import 'app_provider.dart';
+import '../providers/super_tictactoe_provider.dart';
 
-class TicTacToePage extends StatefulWidget {
-  const TicTacToePage({super.key});
+class SuperTicTacToePage extends StatefulWidget {
+  const SuperTicTacToePage({super.key});
 
   @override
-  State<TicTacToePage> createState() => _TicTacToePageState();
+  State<SuperTicTacToePage> createState() => _SuperTicTacToePageState();
 }
 
-class _TicTacToePageState extends State<TicTacToePage> {
+class _SuperTicTacToePageState extends State<SuperTicTacToePage> {
   late ConfettiController _confettiController;
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<AppProvider>(context);
+    final prov = Provider.of<SuperTicTacToeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -175,7 +175,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
     );
   }
 
-  Widget buildGrid(int gridIndex, AppProvider ticTacToeNotifier) {
+  Widget buildGrid(int gridIndex, SuperTicTacToeProvider ticTacToeNotifier) {
     // for Outer Grid
     bool isPlayable = ticTacToeNotifier.isPlayableGrid(gridIndex);
     Color borderColor =
@@ -222,7 +222,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
   Widget buildGridCell(
     int gridIndex,
     int cellIndex,
-    AppProvider prov,
+    SuperTicTacToeProvider prov,
   ) {
     // for Inner Grid
 
@@ -264,7 +264,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
     );
   }
 
-  void showWinnerDialog(AppProvider prov) {
+  void showWinnerDialog(SuperTicTacToeProvider prov) {
     if (prov.isWon) {
       _confettiController.play();
     }

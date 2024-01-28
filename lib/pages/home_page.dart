@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
+
 import '../theme/theme.dart';
-import '../theme/theme_provider.dart';
-import 'tictactoe_page.dart';
-import 'app_provider.dart';
+import '../providers/app_provider.dart';
+import 'super_tictactoe_page.dart';
+import '../providers/super_tictactoe_provider.dart';
+import 'new.dart';
+import '../providers/tictactoe_provider.dart';
 import 'settings_page.dart';
 import '../components/rounded_button.dart';
 
@@ -21,12 +24,12 @@ class StartScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(
-              Provider.of<ThemeProvider>(context).themeData == lightMode
+              Provider.of<AppProvider>(context).themeData == lightMode
                   ? Icons.light_mode_outlined
                   : Icons.dark_mode_outlined,
             ),
             onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              Provider.of<AppProvider>(context, listen: false).toggleTheme();
             },
           ),
         ],
@@ -43,13 +46,29 @@ class StartScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChangeNotifierProvider(
-                      create: (_) => AppProvider(),
-                      child: const TicTacToePage(),
+                      create: (_) => SuperTicTacToeProvider(),
+                      child: const SuperTicTacToePage(),
                     ),
                   ),
                 );
               },
               label: 'Start Multiplayer',
+            ),
+            CustomRoundedButton(
+              icon: CupertinoIcons.person_2_alt,
+              onPressed: () {
+                SystemSound.play(SystemSoundType.click);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (_) => TicTacToeProvider(),
+                      child: const TicTacToePage(),
+                    ),
+                  ),
+                );
+              },
+              label: 'Normal TicTacToe',
             ),
             CustomRoundedButton(
               icon: CupertinoIcons.settings,

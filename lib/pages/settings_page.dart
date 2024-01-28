@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'app_provider.dart';
+import '../providers/super_tictactoe_provider.dart';
 import '../components/rounded_button.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<AppProvider>(context);
+    final prov = Provider.of<SuperTicTacToeProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
