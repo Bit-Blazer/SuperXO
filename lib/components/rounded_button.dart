@@ -29,17 +29,14 @@ class CustomRoundedButton extends StatelessWidget {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              size: 25,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
                 label.toUpperCase(),
-                textAlign: TextAlign.center,
               ),
             ),
           ],

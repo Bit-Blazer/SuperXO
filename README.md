@@ -2,7 +2,6 @@
 
 Meta Version of Traditional TicTacToe - Built using Flutter.
 
-
 ## Building for production
 
 To build the app for iOS (and open Xcode when finished):

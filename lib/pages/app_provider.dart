@@ -54,14 +54,11 @@ class AppProvider with ChangeNotifier {
 
   bool isPlayableGrid(int gridIndex) {
     bool isActiveGrid = (activeGrid == gridIndex);
-    bool isWonGrid =
-        activeGrid != -1 && winners[activeGrid] != GridState.notWon;
-
-    if (activeGrid == -1 || isWonGrid) {
-      // If the larger grid is won, highlight all smaller grids
+    if (activeGrid == -1 && winners[gridIndex] == GridState.notWon) {
+      // If the a grid is won, highlight all grids that are not won
       return true;
     } else {
-      // Highlight the active smaller grid
+      // Highlight the active grid
       return isActiveGrid;
     }
   }

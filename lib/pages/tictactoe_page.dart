@@ -108,7 +108,7 @@ class _TicTacToePageState extends State<TicTacToePage> {
                     prov.currentPlayer == CellState.X
                         ? 'assets/images/x.png'
                         : 'assets/images/o.png',
-                    width: 15,
+                    width: 20,
                     alignment: Alignment.center,
                   ),
                 ],
@@ -126,8 +126,9 @@ class _TicTacToePageState extends State<TicTacToePage> {
                     height: squareSize,
                     decoration: BoxDecoration(
                       border: Border.all(
+                        strokeAlign: 1.0,
                         color: Colors.grey,
-                        width: 3.0,
+                        width: 4.0,
                       ),
                     ),
                     child: GridView.builder(
@@ -177,9 +178,13 @@ class _TicTacToePageState extends State<TicTacToePage> {
   Widget buildGrid(int gridIndex, AppProvider ticTacToeNotifier) {
     // for Outer Grid
     bool isPlayable = ticTacToeNotifier.isPlayableGrid(gridIndex);
-    Color borderColor = isPlayable ? Colors.blue : Colors.grey;
+    Color borderColor =
+        isPlayable ? Theme.of(context).colorScheme.primary : Colors.grey;
+
     return Container(
       decoration: BoxDecoration(
+        color:
+            isPlayable ? Theme.of(context).colorScheme.primaryContainer : null,
         border: Border(
           left: BorderSide(
             color: borderColor,

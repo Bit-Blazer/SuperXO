@@ -48,7 +48,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       });
                     },
                   ),
-                  const SizedBox(height: 16),
                   SwitchListTile(
                     thumbIcon: MaterialStateProperty.resolveWith<Icon?>(
                       (Set<MaterialState> states) {
