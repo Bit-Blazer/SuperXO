@@ -20,6 +20,7 @@ class AppProvider with ChangeNotifier {
   final sound1 = AssetSource('audio/cell_tap.wav');
   final sound2 = AssetSource('audio/local_win.wav');
   final sound3 = AssetSource('audio/global_win.wav');
+
   void tapSound() async {
     if (isSoundOn) {
       await player.play(

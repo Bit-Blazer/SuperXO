@@ -7,7 +7,7 @@ import '../theme/theme.dart';
 import '../providers/app_provider.dart';
 import 'super_tictactoe_page.dart';
 import '../providers/super_tictactoe_provider.dart';
-import 'new.dart';
+import 'tictactoe_page.dart';
 import '../providers/tictactoe_provider.dart';
 import 'settings_page.dart';
 import '../components/rounded_button.dart';
