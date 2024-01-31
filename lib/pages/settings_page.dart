@@ -1,21 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/super_tictactoe_provider.dart';
+import '../providers/app_provider.dart';
 import '../components/rounded_button.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<SuperTicTacToeProvider>(context);
+    final prov = Provider.of<AppProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -43,9 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: prov.isMusicOn,
                     title: const Text('Music'),
                     onChanged: (bool value) {
-                      setState(() {
-                        prov.isMusicOn = value;
-                      });
+                      prov.toggleMusic();
                     },
                   ),
                   SwitchListTile(
@@ -62,16 +55,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: prov.isSoundOn,
                     title: const Text('Sound'),
                     onChanged: (bool value) {
-                      setState(() {
-                        prov.isSoundOn = value;
-                      });
+                      prov.toggleSound();
                     },
                   ),
                 ],
               ),
             ),
             CustomRoundedButton(
-              icon: CupertinoIcons.arrow_left_circle_fill,
+              icon: Icons.arrow_back,
               label: 'Go Back',
               onPressed: () {
                 Navigator.pop(context);
