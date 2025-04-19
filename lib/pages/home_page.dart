@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
-import '../theme/theme.dart';
-import '../providers/app_provider.dart';
-import 'super_tictactoe_page.dart';
-import '../providers/super_tictactoe_provider.dart';
-import 'tictactoe_page.dart';
-import '../providers/tictactoe_provider.dart';
-import 'settings_page.dart';
 import '../components/rounded_button.dart';
+import '../providers/app_provider.dart';
+import '../providers/super_tictactoe_provider.dart';
+import '../providers/tictactoe_provider.dart';
+import '../theme/theme.dart';
+import 'settings_page.dart';
+import 'super_tictactoe_page.dart';
+import 'tictactoe_page.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -45,14 +45,15 @@ class StartScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                      create: (_) => SuperTicTacToeProvider(),
-                      child: const SuperTicTacToePage(),
-                    ),
+                    builder:
+                        (context) => ChangeNotifierProvider(
+                          create: (_) => SuperTicTacToeProvider(),
+                          child: const SuperTicTacToePage(),
+                        ),
                   ),
                 );
               },
-              label: 'Start Multiplayer',
+              label: 'Super TicTacToe',
             ),
             CustomRoundedButton(
               icon: CupertinoIcons.person_2_alt,
@@ -61,10 +62,11 @@ class StartScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                      create: (_) => TicTacToeProvider(),
-                      child: const TicTacToePage(),
-                    ),
+                    builder:
+                        (context) => ChangeNotifierProvider(
+                          create: (_) => TicTacToeProvider(),
+                          child: const TicTacToePage(),
+                        ),
                   ),
                 );
               },

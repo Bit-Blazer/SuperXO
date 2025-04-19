@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
-enum CellState {
-  empty,
-  X,
-  O,
-}
+enum CellState { empty, X, O }
 
 class TicTacToeProvider with ChangeNotifier {
   List<CellState> board = List.filled(9, CellState.empty);
   CellState currentPlayer = CellState.X;
   bool isWon = false;
   bool isDraw = false;
+  bool isSinglePlayer = false; // Default to two player mode
 
   void tapAction(int index) {
     board[index] = currentPlayer;
@@ -26,7 +23,10 @@ class TicTacToeProvider with ChangeNotifier {
     currentPlayer = CellState.X;
     notifyListeners();
   }
-
+  void setGameMode(bool isSinglePlayerMode) {
+    isSinglePlayer = isSinglePlayerMode;
+    resetGame();
+  }
   bool checkForWin() {
     for (int i = 0; i < 3; i++) {
       // Check rows

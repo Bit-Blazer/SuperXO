@@ -1,4 +1,4 @@
-# superxo
+# SuperXO
 
 Meta Version of Traditional TicTacToe - Built using Flutter.
 

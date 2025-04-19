@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/app_provider.dart';
 import '../components/rounded_button.dart';
+import '../providers/app_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -12,10 +12,7 @@ class SettingsPage extends StatelessWidget {
     final prov = Provider.of<AppProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -25,30 +22,13 @@ class SettingsPage extends StatelessWidget {
               child: Column(
                 children: [
                   SwitchListTile(
-                    thumbIcon: MaterialStateProperty.resolveWith<Icon?>(
-                      (Set<MaterialState> states) {
-                        return prov.isMusicOn
-                            ? const Icon(Icons.music_note)
-                            : const Icon(Icons.music_off);
-                      },
-                    ),
-                    secondary: Icon(
-                      prov.isMusicOn ? Icons.music_note : Icons.music_off,
-                    ),
-                    value: prov.isMusicOn,
-                    title: const Text('Music'),
-                    onChanged: (bool value) {
-                      prov.toggleMusic();
-                    },
-                  ),
-                  SwitchListTile(
-                    thumbIcon: MaterialStateProperty.resolveWith<Icon?>(
-                      (Set<MaterialState> states) {
-                        return prov.isSoundOn
-                            ? const Icon(Icons.graphic_eq)
-                            : const Icon(Icons.volume_off);
-                      },
-                    ),
+                    thumbIcon: WidgetStateProperty.resolveWith<Icon?>((
+                      Set<WidgetState> states,
+                    ) {
+                      return prov.isSoundOn
+                          ? const Icon(Icons.graphic_eq)
+                          : const Icon(Icons.volume_off);
+                    }),
                     secondary: Icon(
                       prov.isSoundOn ? Icons.graphic_eq : Icons.volume_off,
                     ),
