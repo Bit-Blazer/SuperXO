@@ -27,5 +27,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: SuperXO Latest Build
+          tag_name: latest
           body: "Automatically generated for commit ${{ github.sha }}"
           files: build/app/outputs/flutter-apk/*.apk
